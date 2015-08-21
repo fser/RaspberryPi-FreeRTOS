@@ -1,6 +1,7 @@
 #
 #	FreeRTOS portable layer for RaspberryPi
 #
+OBJECTS += $(BUILD_DIR)FreeRTOS/Source/portable/GCC/RaspberryPi/wrap.o
 OBJECTS += $(BUILD_DIR)FreeRTOS/Source/portable/GCC/RaspberryPi/port.o
 OBJECTS += $(BUILD_DIR)FreeRTOS/Source/portable/GCC/RaspberryPi/portisr.o
 
@@ -17,6 +18,7 @@ OBJECTS += $(BUILD_DIR)FreeRTOS/Source/tasks.o
 #
 OBJECTS += $(BUILD_DIR)Demo/Drivers/interrupts.o
 OBJECTS += $(BUILD_DIR)Demo/Drivers/gpio.o
+OBJECTS += $(BUILD_DIR)Demo/Drivers/uart.o
 
 $(BUILD_DIR)FreeRTOS/Source/portable/GCC/RaspberryPi/port.o: CFLAGS += -I $(BASE)Demo/
 

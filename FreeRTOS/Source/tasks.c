@@ -1085,7 +1085,7 @@ portBASE_TYPE xReturn;
 		/* Create the idle task without storing its handle. */
 		xReturn = xTaskCreate( prvIdleTask, ( signed char * ) "IDLE", tskIDLE_STACK_SIZE, ( void * ) NULL, ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), NULL );
 	}
-	#endif	
+	#endif
 
 	#if ( configUSE_TIMERS == 1 )
 	{
@@ -1658,6 +1658,12 @@ void vTaskSwitchContext( void )
 #endif
 
 		listGET_OWNER_OF_NEXT_ENTRY( pxCurrentTCB, &( pxReadyTasksLists[ uxTopReadyPriority ] ) );
+
+		/* If we siwtch to the Idle Task that means, assuming there is no call to delay, the bench is finished */
+		if(pxCurrentTCB->pcTaskName[0] == 'I' &&pxCurrentTCB->pcTaskName[1] == 'D' &&pxCurrentTCB->pcTaskName[2] == 'L' &&pxCurrentTCB->pcTaskName[3] == 'E'){
+		  uartPutS("switching to idle\n");
+		  asm volatile("udf");
+		}
 
 #if (configBLUETHUNDER == 1)
 		pTraceEvent = pxCurrentTCB->pTraceEvent;	// Restore Trace event pointer state to TCB.

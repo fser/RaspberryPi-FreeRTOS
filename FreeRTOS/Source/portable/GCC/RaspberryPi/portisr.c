@@ -47,7 +47,8 @@ void vPortISRStartFirstTask( void );
 /*-----------------------------------------------------------*/
 
 int g_bStarted = 0;
-
+extern void print_cpu_mode(unsigned int psr);
+extern unsigned int read_cpsr(void);
 void vPortISRStartFirstTask( void )
 {
 
@@ -58,10 +59,10 @@ void vPortISRStartFirstTask( void )
 	 */
 
 	g_bStarted++;
-
-	__asm volatile("mrs 	r0,cpsr");		// Read in the cpsr register.
-	__asm volatile("bic		r0,r0,#0x80");	// Clear bit 8, (0x80) -- Causes IRQs to be enabled
-	__asm volatile("msr		cpsr_c, r0");	// Write it back to the CPSR register
+	//print_cpu_mode(read_cpsr());
+	//__asm volatile("mrs 	r0,cpsr");		// Read in the cpsr register.
+	//__asm volatile("bic		r0,r0,#0x80");	// Clear bit 8, (0x80) -- Causes IRQs to be enabled
+	//__asm volatile("msr		cpsr_c, r0");	// Write it back to the CPSR register
 //	__asm volatile("swi		0");			// Force a task switch with SWI!
 //	__asm volatile("nop");
 
@@ -126,6 +127,7 @@ extern void irqHandler(void);
 void vFreeRTOS_ISR( void ) __attribute__((naked));
 void vFreeRTOS_ISR( void ) {
 	portSAVE_CONTEXT();
+	//		uartPutS(" IT2 ");
 	irqHandler();
 	portRESTORE_CONTEXT();	
 }

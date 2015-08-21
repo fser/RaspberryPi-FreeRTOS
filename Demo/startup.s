@@ -36,7 +36,7 @@ fiq_handler:        .word fiq
 reset:
 	;@	In the reset handler, we need to copy our interrupt vector table to 0x0000, its currently at 0x8000
 
-	mov r0,#0x8000								;@ Store the source pointer
+	mov r0,#0x18000								;@ Store the source pointer
     mov r1,#0x0000								;@ Store the destination pointer.
 
 	;@	Here we copy the branching instructions

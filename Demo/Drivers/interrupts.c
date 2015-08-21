@@ -97,6 +97,7 @@ static void stubHandler(int nIRQ, void *pParam) {
 
 int InitInterruptController() {
 	int i;
+	return 0;
 	for(i = 0; i < BCM2835_INTC_TOTAL_IRQ; i++) {
 		g_VectorTable[i].pfnHandler 	= stubHandler;
 		g_VectorTable[i].pParam			= (void *) 0;
@@ -120,6 +121,7 @@ int RegisterInterrupt(int nIRQ, FN_INTERRUPT_HANDLER pfnHandler, void *pParam) {
 }
 
 int EnableInterrupt(int nIRQ) {
+  return 0;
 	/* Datasheet says "All other bits are unaffected", and I'm counting on that. */
 	unsigned int mask=1<<(nIRQ%32);
 
@@ -156,6 +158,7 @@ int DisableInterrupt(int nIRQ) {
 }
 
 int EnableInterrupts() {
+  return 0;
 	irqEnable();
 	return 0;
 }
