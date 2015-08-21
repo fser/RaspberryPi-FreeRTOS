@@ -6,8 +6,15 @@
 #include "task.h"
 #include <Drivers/interrupts.h>
 
+#define UNPRIVILEGED_TASK
+
 /* Constants required to setup the task context. */
-#define portINITIAL_SPSR						( ( portSTACK_TYPE ) 0x1f ) /* System mode, ARM mode, interrupts enabled. */
+#ifdef UNPRIVILEGED_TASK
+#define portINITIAL_SPSR ( ( portSTACK_TYPE ) 0x10 ) /* User mode, ARM mode, interrupts enabled. */
+#else
+#define portINITIAL_SPSR ( ( portSTACK_TYPE ) 0x1f ) /* System mode, ARM mode, interrupts enabled. */
+#endif
+
 #define portTHUMB_MODE_BIT						( ( portSTACK_TYPE ) 0x20 )
 #define portINSTRUCTION_SIZE					( ( portSTACK_TYPE ) 4 )
 #define portNO_CRITICAL_SECTION_NESTING			( ( portSTACK_TYPE ) 0 )
@@ -130,7 +137,7 @@ portBASE_TYPE xPortStartScheduler( void )
 {
 	/* Start the timer that generates the tick ISR.  Interrupts are disabled
 	here already. */
-	prvSetupTimerInterrupt();
+        //prvSetupTimerInterrupt();
 
 	/* Start the first task. */
 	vPortISRStartFirstTask();	
@@ -164,6 +171,7 @@ void vTickISR(int nIRQ, void *pParam )
 	pRegs->CLI = 0;			// Acknowledge the timer interrupt.
 }
 
+#include "Drivers/uart.h"
 /*
  * Setup the timer 0 to generate the tick interrupts at the required frequency.
  */
@@ -194,6 +202,15 @@ static void prvSetupTimerInterrupt( void )
 
 	RegisterInterrupt(64, vTickISR, NULL);
 
+	unsigned int cpsr;
+
+	asm volatile("mrs %0, cpsr" : : "r"(cpsr));
+
+	if(!(cpsr&(1<<7)))
+	  uartPutS("IT enabled");
+	else
+	  uartPutS("IT disabled");
+	  
 	EnableInterrupt(64);
 
 	EnableInterrupts();

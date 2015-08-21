@@ -9,6 +9,10 @@ MODULE_NAME="RaspberryPi BSP"
 TARGETS=kernel.img kernel.list kernel.syms kernel.elf
 LINKER_SCRIPT=raspberrypi.ld
 
+
+QEMU_PATH = /home/pgraux/qemu-build/bin
+QEMU = $(QEMU_PATH)/qemu-system-arm
+
 -include .dbuild/dbuild.mk
 
 
@@ -33,3 +37,24 @@ kernel.elf: LDFLAGS += -L "/usr/lib/gcc/arm-none-eabi/4.8/" -lgcc
 kernel.elf: LDFLAGS += -L "/usr/lib/arm-none-eabi/lib/" -lc
 kernel.elf: $(OBJECTS)
 	$(Q)$(LD) $(OBJECTS) -Map kernel.map -o $@ -T $(LINKER_SCRIPT) $(LDFLAGS)
+
+
+.PHONY: emu
+emu: all
+	$(QEMU) -kernel kernel.elf -cpu arm1176 -m 512 -M raspi -nographic
+
+.PHONY: debug-emu
+debug-emu: all
+	$(QEMU) -s -S -kernel kernel.elf -cpu arm1176 -m 512 -M raspi -nographic
+
+.PHONY: clef
+clef: kernel.img
+	sudo ./flash.sh
+
+.PHONY: flash
+flash: kernel.img
+	sudo mount /dev/sdc1 /tmp/clef
+	sudo cp kernel.img /tmp/clef/kernel.img
+	sync
+	sudo umount /tmp/clef/
+	beep -f 2000 -l 400
