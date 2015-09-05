@@ -11,7 +11,7 @@ OBJECTS += $(BUILD_DIR)FreeRTOS/Source/croutine.o
 OBJECTS += $(BUILD_DIR)FreeRTOS/Source/list.o
 OBJECTS += $(BUILD_DIR)FreeRTOS/Source/queue.o
 OBJECTS += $(BUILD_DIR)FreeRTOS/Source/tasks.o
-
+OBJECTS += $(BUILD_DIR)Demo/Drivers/uart.o
 #
 #	Interrupt Manager & GPIO Drivers
 #
