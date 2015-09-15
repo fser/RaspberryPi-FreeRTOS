@@ -11,6 +11,19 @@ LINKER_SCRIPT=raspberrypi.ld
 
 -include .dbuild/dbuild.mk
 
+QEMU_PATH = /home/fser/code/qemu-raspi/arm-softmmu/
+QEMU = $(QEMU_PATH)/qemu-system-arm
+
+
+
+.PHONY: emu
+emu: all
+	$(QEMU) -kernel kernel.elf -cpu arm1176 -m 512 -M raspi -nographic
+
+.PHONY: debug-emu
+debug-emu: all
+	$(QEMU) -s -S -kernel kernel.elf -cpu arm1176 -m 512 -M raspi -nographic
+
 
 all: kernel.list kernel.img kernel.syms
 	@$(SIZE) kernel.elf
@@ -29,7 +42,7 @@ kernel.syms: kernel.elf
 
 #kernel.elf: LDFLAGS += -L "/opt/Xilinx/14.2/ISE_DS/EDK/gnu/arm/lin64/lib/gcc/arm-xilinx-eabi/4.6.1/" -lgcc
 #kernel.elf: LDFLAGS += -L "/opt/Xilinx/14.2/ISE_DS/EDK/gnu/arm/lin64/arm-xilinx-eabi/lib/" -lc
-kernel.elf: LDFLAGS += -L "/usr/lib/gcc/arm-none-eabi/4.8/" -lgcc
-kernel.elf: LDFLAGS += -L "/usr/lib/arm-none-eabi/lib/" -lc
+kernel.elf: LDFLAGS += -L "/usr/lib/gcc/arm-none-eabi/4.9.3/" -lgcc
+kernel.elf: LDFLAGS += -L "/usr/arm-none-eabi/lib/" -lc
 kernel.elf: $(OBJECTS)
 	$(Q)$(LD) $(OBJECTS) -Map kernel.map -o $@ -T $(LINKER_SCRIPT) $(LDFLAGS)
